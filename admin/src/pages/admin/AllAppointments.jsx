@@ -1,7 +1,7 @@
 import React from "react";
 
 const AllAppointments = () => {
-  return <div>AllAppointments</div>;
+  return <div className="mt-15">AllAppointments</div>;
 };
 
 export default AllAppointments;
