@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -11,16 +13,28 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false); // for profile dropdown
-  const [token, setToken] = useState(true);
+  const [profileOpen, setProfileOpen] = useState(false);
   const navigate = useNavigate();
+
+  const { token, setToken, userData } = useContext(AppContext);
+
+  const logoutHandler = () => {
+    setToken(false);
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <img onClick={()=> navigate('/')} src={assets.logo} alt="Logo" className="h-10 w-auto" />
+          <img
+            onClick={() => navigate("/")}
+            src={assets.logo}
+            alt="Logo"
+            className="h-10 w-auto"
+          />
         </div>
 
         {/* Desktop Menu */}
@@ -43,7 +57,7 @@ const Navbar = () => {
 
         {/* Desktop Right Side */}
         <div className="hidden md:flex items-center relative">
-          {token ? (
+          {token && userData ? (
             <div
               className="flex items-center gap-2 cursor-pointer relative"
               onMouseEnter={() => setProfileOpen(true)}
@@ -51,7 +65,7 @@ const Navbar = () => {
             >
               {/* Profile avatar and dropdown icon */}
               <img
-                src={assets.profile_pic}
+                src={userData.image}
                 alt="Profile"
                 className="h-8 w-8 rounded-full border border-gray-300"
               />
@@ -79,7 +93,7 @@ const Navbar = () => {
                     My Appointments
                   </p>
                   <p
-                    onClick={() => setToken(false)} 
+                    onClick={logoutHandler}
                     className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                   >
                     Logout
