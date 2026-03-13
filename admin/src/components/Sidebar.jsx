@@ -1,13 +1,16 @@
 import React, { useContext, useState } from "react";
 import { AdminContext } from "../context/AdminContext";
+import { doctorContext } from "../context/DoctorContext";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 const Sidebar = () => {
   const { aToken } = useContext(AdminContext);
+  const { dtoken } = useContext(doctorContext);
   const [isOpen, setIsOpen] = useState(false);
 
-  const menuItems = [
+  // Admin Menu
+  const adminMenu = [
     { name: "Dashboard", path: "/admin-dashboard", icon: assets.home_icon },
     {
       name: "Appointments",
@@ -18,9 +21,22 @@ const Sidebar = () => {
     { name: "Doctors List", path: "/doctor-list", icon: assets.people_icon },
   ];
 
+  // Doctor Menu
+  const doctorMenu = [
+    { name: "Dashboard", path: "/doctor-dashboard", icon: assets.home_icon },
+    {
+      name: "Appointments",
+      path: "/doctor-appointments",
+      icon: assets.appointment_icon,
+    },
+    { name: "Profile", path: "/doctor-profile", icon: assets.people_icon },
+  ];
+
+  const menuItems = aToken ? adminMenu : doctorMenu;
+
   return (
     <div className="mt-10">
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 
@@ -30,19 +46,17 @@ const Sidebar = () => {
         ☰
       </button>
 
-      {aToken && (
+      {(aToken || dtoken) && (
         <aside
-          className={`
-            fixed top-0 left-0 h-screen w-64 bg-white shadow-xl border-r border-gray-100
-            transform transition-transform duration-300 ease-in-out z-40
-            ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0
-          `}
+          className={`fixed top-0 left-0 h-screen w-64 bg-white shadow-xl border-r border-gray-100
+          transform transition-transform duration-300 ease-in-out z-40
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0`}
         >
-          {/* Logo / Title */}
+          {/* Title */}
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-xl font-bold text-gray-800 tracking-wide">
-              Admin Panel
+              {aToken ? "Admin Panel" : "Doctor Panel"}
             </h2>
           </div>
 

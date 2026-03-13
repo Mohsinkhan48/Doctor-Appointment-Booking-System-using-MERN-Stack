@@ -5,8 +5,10 @@ import {
   getProfile,
   listAppointments,
   loginUser,
+  paymentStripe,
   registerUser,
   updateProfile,
+  verifyStripe,
 } from "../controllers/userController.js";
 import authUser from "../middlewares/authUser.js";
 import upload from "../middlewares/multer.js";
@@ -25,5 +27,7 @@ userRouter.post(
 userRouter.post("/book-appointment", authUser, bookAppointment);
 userRouter.get("/list-appointments", authUser, listAppointments);
 userRouter.post("/cancel-appointment", authUser, cancelAppointment);
+userRouter.post("/stripe-payment", authUser, paymentStripe);
+userRouter.post("/verify-payment", authUser, verifyStripe);
 
 export default userRouter;

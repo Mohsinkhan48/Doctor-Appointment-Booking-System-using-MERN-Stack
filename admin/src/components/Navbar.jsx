@@ -3,9 +3,11 @@ import { assets } from "../assets/assets";
 import { AdminContext } from "../context/AdminContext";
 import { useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import { doctorContext } from "../context/DoctorContext";
 
 const Navbar = () => {
   const { aToken, setAToken } = useContext(AdminContext);
+  const { dtoken, setDToken } = useContext(doctorContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -13,6 +15,8 @@ const Navbar = () => {
     aToken && setAToken("");
     aToken && localStorage.removeItem("aToken");
     navigate("/");
+    dtoken && setDToken("");
+    dtoken && localStorage.removeItem("dtoken");
   };
 
   return (

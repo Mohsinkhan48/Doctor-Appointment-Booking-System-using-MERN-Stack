@@ -1,17 +1,25 @@
-import React, { useContext, useEffect } from "react";
-import { AdminContext } from "../../context/AdminContext";
+import React from "react";
+import { useContext } from "react";
+import { doctorContext } from "../../context/DoctorContext";
+import { useEffect } from "react";
 import { assets } from "../../assets/assets";
 import { AppContext } from "../../context/AppContext";
 
-const Dashboard = () => {
-  const { aToken, getDashboardData, dashData, cancelAppointment } =
-    useContext(AdminContext);
-
-  const { slotDateFormat } = useContext(AppContext);
-
+const DoctorDashboard = () => {
+  const {
+    getDashData,
+    dashData,
+    setDashData,
+    dtoken,
+    cancelAppointment,
+    completeAppointment,
+  } = useContext(doctorContext);
+  const { slotDateFormat, currency } = useContext(AppContext);
   useEffect(() => {
-    if (aToken) getDashboardData();
-  }, [aToken]);
+    if (dtoken) {
+      getDashData();
+    }
+  }, [dtoken]);
 
   return (
     dashData && (
@@ -26,14 +34,16 @@ const Dashboard = () => {
           {/* Doctors */}
           <div className="bg-white rounded-xl shadow-md p-6 flex items-center gap-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
             <div className="bg-blue-100 p-4 rounded-full">
-              <img className="w-8" src={assets.doctor_icon} alt="" />
+              <img className="w-8" src={assets.earning_icon} alt="" />
             </div>
 
             <div>
               <p className="text-2xl font-bold text-gray-800">
-                {dashData.doctors}
+                {" "}
+                {currency}
+                {dashData.earnings}
               </p>
-              <p className="text-gray-500 text-sm">Total Doctors</p>
+              <p className="text-gray-500 text-sm">Total Earnings</p>
             </div>
           </div>
 
@@ -86,14 +96,14 @@ const Dashboard = () => {
                 {/* Left Side */}
                 <div className="flex items-center gap-4">
                   <img
-                    src={item.docData.image}
+                    src={item.userData.image}
                     alt=""
                     className="w-12 h-12 rounded-full object-cover border"
                   />
 
                   <div>
                     <p className="font-semibold text-gray-800">
-                      {item.docData.name}
+                      {item.userData.name}
                     </p>
                     <p className="text-sm text-gray-500">
                       {slotDateFormat(item.slotDate)}
@@ -112,12 +122,21 @@ const Dashboard = () => {
                       Completed
                     </span>
                   ) : (
-                    <img
-                      onClick={() => cancelAppointment(item._id)}
-                      src={assets.cancel_icon}
-                      alt="cancel"
-                      className="w-8 h-8 cursor-pointer hover:scale-110 transition"
-                    />
+                    <>
+                      <button
+                        onClick={() => cancelAppointment(item._id)}
+                        className="p-2 rounded-lg bg-red-100 hover:bg-red-200 transition"
+                      >
+                        <img src={assets.cancel_icon} alt="" className="w-4" />
+                      </button>
+
+                      <button
+                        onClick={() => completeAppointment(item._id)}
+                        className="p-2 rounded-lg bg-green-100 hover:bg-green-200 transition"
+                      >
+                        <img src={assets.tick_icon} alt="" className="w-4" />
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -129,4 +148,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DoctorDashboard;

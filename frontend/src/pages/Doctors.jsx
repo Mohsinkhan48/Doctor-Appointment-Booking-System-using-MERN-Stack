@@ -19,7 +19,7 @@ const Doctors = () => {
 
   useEffect(() => {
     if (speciality) {
-      setFilterDoc(doctors.filter(doc => doc.speciality === speciality));
+      setFilterDoc(doctors.filter((doc) => doc.speciality === speciality));
     } else {
       setFilterDoc(doctors);
     }
@@ -36,7 +36,6 @@ const Doctors = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-10 mt-10">
-
       {/* Heading */}
       <h2 className="text-2xl font-semibold text-gray-900 mb-2">
         Find Your Doctor
@@ -83,9 +82,17 @@ const Doctors = () => {
               />
 
               {/* Availability */}
-              <div className="absolute top-4 left-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1">
-                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                Available
+              <div
+                className={`absolute top-4 left-4 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 ${
+                  item.available ? "bg-green-500" : "bg-gray-500"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full animate-pulse ${
+                    item.available ? "bg-green-500" : "bg-gray-500"
+                  }`}
+                ></span>
+                {item.available ? "Available" : "Not Available"}
               </div>
             </div>
 
@@ -94,9 +101,7 @@ const Doctors = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 {item.name}
               </h3>
-              <p className="text-sm text-gray-600 mt-1">
-                {item.speciality}
-              </p>
+              <p className="text-sm text-gray-600 mt-1">{item.speciality}</p>
             </div>
           </div>
         ))}

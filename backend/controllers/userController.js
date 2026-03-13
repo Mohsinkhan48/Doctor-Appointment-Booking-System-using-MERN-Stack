@@ -5,6 +5,7 @@ import userModel from "../models/UserModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import doctorModel from "../models/doctorModel.js";
 import appointmentModel from "../models/appointmentModel.js";
+import Stripe from "stripe";
 
 const registerUser = async (req, res) => {
   try {
@@ -203,6 +204,58 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const paymentStripe = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    const appointmentData = await appointmentModel.findById(appointmentId);
+
+    if (!appointmentData) {
+      return res.json({ success: false, message: "Appointment not found" });
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Doctor Appointment",
+            },
+            unit_amount: appointmentData.amount, // amount in cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.FRONTEND_URL}/payment-success?appointmentId=${appointmentId}`,
+      cancel_url: `${process.env.FRONTEND_URL}/my-appointments`,
+    });
+
+    res.json({ success: true, url: session.url });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+const verifyStripe = async (req, res) => {
+  try {
+    const { appointmentId } = req.body;
+
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      payment: true,
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
 export {
   registerUser,
   loginUser,
@@ -211,4 +264,6 @@ export {
   bookAppointment,
   listAppointments,
   cancelAppointment,
+  paymentStripe,
+  verifyStripe,
 };
