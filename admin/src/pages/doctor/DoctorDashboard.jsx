@@ -26,7 +26,7 @@ const DoctorDashboard = () => {
       <div className="min-h-screen bg-gray-50 p-6 md:p-10 mt-10">
         {/* Heading */}
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">
-          Admin Dashboard
+          Doctor Dashboard
         </h1>
 
         {/* Dashboard Cards */}
